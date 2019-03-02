@@ -28,7 +28,7 @@
             "s3:GetObject"
           ],
           "Resource": [
-            "arn:aws:s3:::G4Z-some-s3-bucket/*"
+            "arn:aws:s3:::some-s3-bucket/*"
           ]
         },
         {
@@ -85,10 +85,13 @@
         "SQS_ARN": {
           "Ref": "SomeQueueName"
         },
+        "S3_BUCKET": {
+          "Ref": "S3Bucket"
+        },
         "STAGE": "dev",
         "PROFILE": "",
         "QUEUE_NAME": "basic-queue",
-        "S3_BUCKET": "G4Z-some-s3-bucket"
+        "S3_BUCKET_NAME": "some-s3-bucket"
       },
       "versionFunctions": true,
       "remoteFunctionData": null,
@@ -103,6 +106,12 @@
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
               "LogGroupName": "/aws/lambda/hello-world-dev-helloWorld"
+            }
+          },
+          "S3uploadImageLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/hello-world-dev-s3uploadImage"
             }
           },
           "SubscribeLogGroup": {
@@ -161,6 +170,9 @@
                             "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/hello-world-dev-helloWorld:*"
                           },
                           {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/hello-world-dev-s3uploadImage:*"
+                          },
+                          {
                             "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/hello-world-dev-subscribe:*"
                           },
                           {
@@ -176,6 +188,9 @@
                         "Resource": [
                           {
                             "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/hello-world-dev-helloWorld:*:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/hello-world-dev-s3uploadImage:*:*"
                           },
                           {
                             "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/hello-world-dev-subscribe:*:*"
@@ -241,7 +256,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/hello-world/dev/1551553403575-2019-03-02T19:03:23.575Z/helloWorld.zip"
+                "S3Key": "serverless/hello-world/dev/1551556067859-2019-03-02T19:47:47.859Z/helloWorld.zip"
               },
               "FunctionName": "hello-world-dev-helloWorld",
               "Handler": "src/modules/hello-world/index.helloWorldHandler",
@@ -261,10 +276,13 @@
                   "SQS_ARN": {
                     "Ref": "SomeQueueName"
                   },
+                  "S3_BUCKET": {
+                    "Ref": "S3Bucket"
+                  },
                   "STAGE": "dev",
                   "PROFILE": "",
                   "QUEUE_NAME": "basic-queue",
-                  "S3_BUCKET": "G4Z-some-s3-bucket"
+                  "S3_BUCKET_NAME": "some-s3-bucket"
                 }
               }
             },
@@ -273,7 +291,7 @@
               "IamRoleLambdaExecution"
             ]
           },
-          "HelloWorldLambdaVersionm92LZQgKDnilIELflg0sdbD7I2JrEpFWr0YeFFq4": {
+          "HelloWorldLambdaVersion5v6DiCUlm1tnnXNZhyg0u820X2JblIsOA8A0WedCA": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
@@ -284,6 +302,59 @@
               "Description": "hello world"
             }
           },
+          "S3uploadImageLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/hello-world/dev/1551556067859-2019-03-02T19:47:47.859Z/s3uploadImage.zip"
+              },
+              "FunctionName": "hello-world-dev-s3uploadImage",
+              "Handler": "src/modules/s3-upload-image/index.s3UploadImage",
+              "MemorySize": 128,
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              },
+              "Runtime": "nodejs8.10",
+              "Timeout": 10,
+              "Description": "hello world",
+              "Environment": {
+                "Variables": {
+                  "REGION": "eu-central-1",
+                  "SQS_ARN": {
+                    "Ref": "SomeQueueName"
+                  },
+                  "S3_BUCKET": {
+                    "Ref": "S3Bucket"
+                  },
+                  "STAGE": "dev",
+                  "PROFILE": "",
+                  "QUEUE_NAME": "basic-queue",
+                  "S3_BUCKET_NAME": "some-s3-bucket"
+                }
+              }
+            },
+            "DependsOn": [
+              "S3uploadImageLogGroup",
+              "IamRoleLambdaExecution"
+            ]
+          },
+          "S3uploadImageLambdaVersionzXlVGW8WY8uX4OLUcTgS2Lr10SQIrGHDb7j5nvG0": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "S3uploadImageLambdaFunction"
+              },
+              "CodeSha256": "zNjR47E5KFwBMLryrNi5LgWJN+xPK1AC31tArsbVVoc=",
+              "Description": "hello world"
+            }
+          },
           "SubscribeLambdaFunction": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
@@ -291,7 +362,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/hello-world/dev/1551553403575-2019-03-02T19:03:23.575Z/subscribe.zip"
+                "S3Key": "serverless/hello-world/dev/1551556067859-2019-03-02T19:47:47.859Z/subscribe.zip"
               },
               "FunctionName": "hello-world-dev-subscribe",
               "Handler": "src/modules/sqs-publish-subscribe/index.subscribe",
@@ -311,10 +382,13 @@
                   "SQS_ARN": {
                     "Ref": "SomeQueueName"
                   },
+                  "S3_BUCKET": {
+                    "Ref": "S3Bucket"
+                  },
                   "STAGE": "dev",
                   "PROFILE": "",
                   "QUEUE_NAME": "basic-queue",
-                  "S3_BUCKET": "G4Z-some-s3-bucket"
+                  "S3_BUCKET_NAME": "some-s3-bucket"
                 }
               }
             },
@@ -323,14 +397,14 @@
               "IamRoleLambdaExecution"
             ]
           },
-          "SubscribeLambdaVersionUbCZ4c88FqC5nvfNH0MzhCcMS5MsqGmVxKwaOi8A": {
+          "SubscribeLambdaVersionl527oYc7M9XVHDOLVLEAGL3czSp363KonzX3bCoyKw": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "SubscribeLambdaFunction"
               },
-              "CodeSha256": "kZhYQnfCWqRUAN2DVgdh8EaMYUs28BBuubD9zImrP9k=",
+              "CodeSha256": "Iw36uX8UREWwX2+Wklc1fmIB9Zc//xHe6/gN037YKO8=",
               "Description": "Listens to sqs events"
             }
           },
@@ -341,7 +415,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/hello-world/dev/1551553403575-2019-03-02T19:03:23.575Z/publish.zip"
+                "S3Key": "serverless/hello-world/dev/1551556067859-2019-03-02T19:47:47.859Z/publish.zip"
               },
               "FunctionName": "hello-world-dev-publish",
               "Handler": "src/modules/sqs-publish-subscribe/index.publish",
@@ -361,10 +435,13 @@
                   "SQS_ARN": {
                     "Ref": "SomeQueueName"
                   },
+                  "S3_BUCKET": {
+                    "Ref": "S3Bucket"
+                  },
                   "STAGE": "dev",
                   "PROFILE": "",
                   "QUEUE_NAME": "basic-queue",
-                  "S3_BUCKET": "G4Z-some-s3-bucket"
+                  "S3_BUCKET_NAME": "some-s3-bucket"
                 }
               }
             },
@@ -373,14 +450,14 @@
               "IamRoleLambdaExecution"
             ]
           },
-          "PublishLambdaVersioniX783xtOzWjpFbK5zIKBUhbB2rTU883i5Vcn3uBE": {
+          "PublishLambdaVersionYs4VLCB1EGiyunApO2nMvjbdr5CEg1tzH2uauU5PWsE": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "PublishLambdaFunction"
               },
-              "CodeSha256": "kZhYQnfCWqRUAN2DVgdh8EaMYUs28BBuubD9zImrP9k=",
+              "CodeSha256": "Iw36uX8UREWwX2+Wklc1fmIB9Zc//xHe6/gN037YKO8=",
               "Description": "Listens to sqs events"
             }
           },
@@ -405,6 +482,21 @@
                 ]
               },
               "PathPart": "hello-world",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceS3DashuploadDashimage": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "PathPart": "s3-upload-image",
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               }
@@ -468,6 +560,49 @@
               "MethodResponses": []
             }
           },
+          "ApiGatewayMethodS3DashuploadDashimagePost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceS3DashuploadDashimage"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "S3uploadImageLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            }
+          },
           "ApiGatewayMethodPublishGet": {
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
@@ -511,7 +646,7 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1551553403630": {
+          "ApiGatewayDeployment1551556067915": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -521,6 +656,7 @@
             },
             "DependsOn": [
               "ApiGatewayMethodHelloDashworldGet",
+              "ApiGatewayMethodS3DashuploadDashimagePost",
               "ApiGatewayMethodPublishGet"
             ]
           },
@@ -530,6 +666,53 @@
               "FunctionName": {
                 "Fn::GetAtt": [
                   "HelloWorldLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "apigateway.",
+                    {
+                      "Ref": "AWS::URLSuffix"
+                    }
+                  ]
+                ]
+              },
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "S3uploadImageLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "S3uploadImageLambdaFunction",
                   "Arn"
                 ]
               },
@@ -645,6 +828,13 @@
               "VisibilityTimeout": 130,
               "MessageRetentionPeriod": 260
             }
+          },
+          "S3Bucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+              "BucketName": "some-s3-bucket",
+              "AccessControl": "PublicRead"
+            }
           }
         },
         "Outputs": {
@@ -656,19 +846,25 @@
           "HelloWorldLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "HelloWorldLambdaVersionm92LZQgKDnilIELflg0sdbD7I2JrEpFWr0YeFFq4"
+              "Ref": "HelloWorldLambdaVersion5v6DiCUlm1tnnXNZhyg0u820X2JblIsOA8A0WedCA"
+            }
+          },
+          "S3uploadImageLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "S3uploadImageLambdaVersionzXlVGW8WY8uX4OLUcTgS2Lr10SQIrGHDb7j5nvG0"
             }
           },
           "SubscribeLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "SubscribeLambdaVersionUbCZ4c88FqC5nvfNH0MzhCcMS5MsqGmVxKwaOi8A"
+              "Ref": "SubscribeLambdaVersionl527oYc7M9XVHDOLVLEAGL3czSp363KonzX3bCoyKw"
             }
           },
           "PublishLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "PublishLambdaVersioniX783xtOzWjpFbK5zIKBUhbB2rTU883i5Vcn3uBE"
+              "Ref": "PublishLambdaVersionYs4VLCB1EGiyunApO2nMvjbdr5CEg1tzH2uauU5PWsE"
             }
           },
           "ServiceEndpoint": {
@@ -754,6 +950,28 @@
         "runtime": "nodejs8.10",
         "vpc": {}
       },
+      "s3uploadImage": {
+        "handler": "src/modules/s3-upload-image/index.s3UploadImage",
+        "description": "hello world",
+        "memorySize": 128,
+        "timeout": 10,
+        "events": [
+          {
+            "http": {
+              "path": "s3-upload-image",
+              "method": "post",
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "hello-world-dev-s3uploadImage",
+        "package": {
+          "artifact": ".serverless/s3uploadImage.zip"
+        },
+        "memory": 128,
+        "runtime": "nodejs8.10",
+        "vpc": {}
+      },
       "subscribe": {
         "handler": "src/modules/sqs-publish-subscribe/index.subscribe",
         "description": "Listens to sqs events",
@@ -809,6 +1027,13 @@
             "VisibilityTimeout": 130,
             "MessageRetentionPeriod": 260
           }
+        },
+        "S3Bucket": {
+          "Type": "AWS::S3::Bucket",
+          "Properties": {
+            "BucketName": "some-s3-bucket",
+            "AccessControl": "PublicRead"
+          }
         }
       },
       "Outputs": {}
@@ -816,7 +1041,7 @@
   },
   "package": {
     "individually": true,
-    "artifactDirectoryName": "serverless/hello-world/dev/1551553403575-2019-03-02T19:03:23.575Z",
+    "artifactDirectoryName": "serverless/hello-world/dev/1551556067859-2019-03-02T19:47:47.859Z",
     "artifact": ""
   }
 }

@@ -12,6 +12,8 @@ provider:
     REGION: ${env:REGION}
     SQS_ARN:
       Ref: SomeQueueName
+    S3_BUCKET:
+      Ref: S3Bucket
 custom:
   stages:
     - test
@@ -42,6 +44,15 @@ functions:
       - http:
           path: /hello-world
           method: get
+  s3uploadImage:
+    handler: src/modules/s3-upload-image/index.s3UploadImage
+    description: hello world
+    memorySize: 128
+    timeout: 10
+    events:
+      - http:
+          path: /s3-upload-image
+          method: post
 
   subscribe:
     handler: src/modules/sqs-publish-subscribe/index.subscribe
@@ -73,3 +84,10 @@ resources:
         QueueName: ${env:QUEUE_NAME}
         VisibilityTimeout: 130
         MessageRetentionPeriod: 260
+
+    S3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${env:S3_BUCKET_NAME}
+        AccessControl: "PublicRead"
+

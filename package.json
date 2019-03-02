@@ -14,7 +14,8 @@
   },
   "dependencies": {
     "aws-lambda": "^0.1.2",
-    "aws-sdk": "^2.413.0"
+    "aws-sdk": "^2.413.0",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.0",
@@ -27,6 +28,7 @@
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.6",
     "@types/node": "^10.12.14",
+    "@types/uuid": "^3.4.4",
     "aws-lambda-test-utils": "^1.3.0",
     "babel-loader": "8.0.4",
     "chai": "^4.2.0",
