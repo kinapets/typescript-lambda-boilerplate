@@ -1,0 +1,56 @@
+{
+  "name": "qeetup-vol-6",
+  "version": "0.0.1",
+  "description": "Qeetup vol 6",
+  "license": "Unlicense",
+  "author": "Qest Automation s.r.o.",
+  "scripts": {
+    "code:check": "concurrently \"yarn prettier:check\" \"tslint -p .\" \"tsc --noEmit\"",
+    "code:fix": "concurrently \"yarn prettier:fix\" \"tslint --fix -p .\"",
+    "deploy": "sls deploy -v",
+    "test": "node -r dotenv/config ./node_modules/mocha/bin/_mocha dotenv_config_path=config/.env.test --opts test/mocha.opts",
+    "prettier:check": "prettier -l src/**/*.ts",
+    "prettier:fix": "prettier --write src/**/*.ts"
+  },
+  "dependencies": {
+    "aws-lambda": "^0.1.2",
+    "aws-sdk": "^2.315.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.0",
+    "@babel/core": "7.2.0",
+    "@babel/plugin-proposal-decorators": "^7.2.3",
+    "@babel/preset-env": "^7.2.0",
+    "@babel/preset-typescript": "^7.1.0",
+    "@sentry/typescript": "^4.5.0",
+    "@types/aws-lambda": "8.10.15",
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^10.12.14",
+    "aws-lambda-test-utils": "^1.3.0",
+    "babel-loader": "8.0.4",
+    "chai": "^4.2.0",
+    "concurrently": "^4.1.0",
+    "cross-env": "^5.2.0",
+    "dotenv": "^6.2.0",
+    "mocha": "^6.0.2",
+    "prettier": "^1.14.2",
+    "serverless": "1.28",
+    "serverless-dotenv-plugin": "^2.0.1",
+    "serverless-stage-manager": "^1.0.5",
+    "serverless-webpack": "^5.2.0",
+    "source-map-support": "^0.5.9",
+    "ts-loader": "^5.0.0",
+    "tslint": "^5.11.0",
+    "tslint-config-airbnb": "^5.11.1",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-eslint-rules": "^5.4.0",
+    "tsutils": "2.29.0",
+    "typescript": "^3.2.1",
+    "webpack": "^4.19.1",
+    "webpack-cli": "^3.1.2"
+  },
+  "engines": {
+    "node": "8.x"
+  }
+}

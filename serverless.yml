@@ -1,0 +1,42 @@
+service:
+  name: hello-world
+  description: Description
+provider:
+  name: aws
+  stage: ${env:STAGE}
+  runtime: nodejs8.10
+  profile: ${env:PROFILE}
+  region: ${env:REGION}
+  # iamRoleStatements: ${file(config/iam.yml)}
+  environment:
+    REGION: ${env:REGION}
+custom:
+  stages:
+    - test
+    - dev
+    - prod
+  webpack:
+    webpackConfig: webpack.config.js
+    includeModules: true
+    packager: yarn
+  dotenv:
+    path: ./config/.env
+
+package:
+  individually: true
+
+plugins:
+  - serverless-webpack
+  - serverless-stage-manager
+  - serverless-dotenv-plugin
+
+functions:
+  requestStatus:
+    handler: src/modules/hello-world/index.helloWorldHandler
+    description: hello world
+    memorySize: 128
+    timeout: 10
+    events:
+      - http:
+          path: /status
+          method: get
