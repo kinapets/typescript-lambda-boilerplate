@@ -7,9 +7,11 @@ provider:
   runtime: nodejs8.10
   profile: ${env:PROFILE}
   region: ${env:REGION}
-  # iamRoleStatements: ${file(config/iam.yml)}
+  iamRoleStatements: ${file(config/iam.yml)}
   environment:
     REGION: ${env:REGION}
+    SQS_ARN:
+      Ref: SomeQueueName
 custom:
   stages:
     - test
@@ -31,12 +33,43 @@ plugins:
   - serverless-dotenv-plugin
 
 functions:
-  requestStatus:
+  helloWorld:
     handler: src/modules/hello-world/index.helloWorldHandler
     description: hello world
     memorySize: 128
     timeout: 10
     events:
       - http:
-          path: /status
+          path: /hello-world
           method: get
+
+  subscribe:
+    handler: src/modules/sqs-publish-subscribe/index.subscribe
+    description: Listens to sqs events
+    memorySize: 128
+    timeout: 120
+    events:
+      - sqs:
+          batchSize: 3
+          arn:
+            Fn::GetAtt:
+              - SomeQueueName
+              - Arn
+
+  publish:
+    handler: src/modules/sqs-publish-subscribe/index.publish
+    description: Listens to sqs events
+    memorySize: 128
+    timeout: 120
+    events:
+      - http:
+          path: /publish
+          method: get
+resources:
+  Resources:
+    SomeQueueName:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${env:QUEUE_NAME}
+        VisibilityTimeout: 130
+        MessageRetentionPeriod: 260

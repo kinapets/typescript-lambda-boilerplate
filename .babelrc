@@ -1,0 +1,22 @@
+{
+    "comments": false,
+    "presets": [
+        "@babel/typescript",
+        [
+            "@babel/env",
+            {
+                "targets": {
+                    "node": "8.10"
+                }
+            }
+        ]
+    ],
+    "plugins": [
+        [
+            "@babel/plugin-proposal-decorators",
+            {
+                "legacy": true
+            }
+        ]
+    ]
+}
