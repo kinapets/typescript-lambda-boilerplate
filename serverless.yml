@@ -1,5 +1,5 @@
 service:
-  name: hello-world
+  name: hello-world2
   description: Description
 provider:
   name: aws
@@ -12,8 +12,7 @@ provider:
     REGION: ${env:REGION}
     SQS_ARN:
       Ref: SomeQueueName
-    S3_BUCKET:
-      Ref: S3Bucket
+    S3_BUCKET: ${env:S3_BUCKET_NAME}
 custom:
   stages:
     - test
@@ -35,6 +34,7 @@ plugins:
   - serverless-dotenv-plugin
 
 functions:
+# Hello world
   helloWorld:
     handler: src/modules/hello-world/index.helloWorldHandler
     description: hello world
@@ -44,6 +44,7 @@ functions:
       - http:
           path: /hello-world
           method: get
+# S3
   s3uploadImage:
     handler: src/modules/s3-upload-image/index.s3UploadImage
     description: hello world
@@ -53,7 +54,13 @@ functions:
       - http:
           path: /s3-upload-image
           method: post
-
+  s3UploadImageSubscribe:
+    handler: src/modules/s3-upload-image/index.s3UploadImageSubsribe
+    events:
+      - s3:
+          bucket: ${env:S3_BUCKET_NAME}
+          event: s3:ObjectCreated:*
+# SQS
   subscribe:
     handler: src/modules/sqs-publish-subscribe/index.subscribe
     description: Listens to sqs events
@@ -84,10 +91,4 @@ resources:
         QueueName: ${env:QUEUE_NAME}
         VisibilityTimeout: 130
         MessageRetentionPeriod: 260
-
-    S3Bucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketName: ${env:S3_BUCKET_NAME}
-        AccessControl: "PublicRead"
 

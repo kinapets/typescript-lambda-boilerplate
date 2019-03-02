@@ -1,0 +1,9 @@
+.idea
+.vscode
+.webpack
+.serverless
+config/aws-credentials
+config/.env
+node_modules
+test/img/outputimage.jpeg
+dist

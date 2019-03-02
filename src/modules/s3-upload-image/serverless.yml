@@ -1,7 +1,15 @@
-resources:
-  Resources:
-    S3Bucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketName: ${env:S3_BUCKET_NAME_NAME}
-        AccessControl: "PublicRead"
+functions:
+  uploadImageSubscribe:
+    handler: src/modules/s3-upload-image/index.subscribe
+    events:
+      - s3:
+          bucket: ${env:S3_BUCKET_NAME}
+          event: s3:ObjectCreated:*
+
+
+Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${env:S3_BUCKET_NAME}
+      AccessControl: "PublicRead"
