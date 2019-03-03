@@ -1,5 +1,5 @@
 service:
-  name: hello-world2
+  name: ${env:SERVICE_NAME}
   description: Description
 provider:
   name: aws
@@ -62,9 +62,15 @@ functions:
           event: s3:ObjectCreated:*
 # SNS
   snsSubscribe:
-    handler: src/modules/sns-subscribe/index.snsSubscribe
+    handler: src/modules/sns/index.snsSubscribe
     events:
       - sns: ${env:SNS_TOPIC}
+  snsPublish:
+    handler: src/modules/sns/index.snsPublish
+    events:
+      - http:
+          path: /sns-publish
+          method: get
 # SQS
   subscribe:
     handler: src/modules/sqs-publish-subscribe/index.subscribe
