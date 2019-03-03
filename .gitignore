@@ -7,3 +7,5 @@ config/.env
 node_modules
 test/img/outputimage.jpeg
 dist
+.notes
+.env
