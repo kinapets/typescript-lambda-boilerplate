@@ -4,6 +4,14 @@
   Resource: '*'
 - Effect: Allow
   Action:
+    - rekognition:CompareFaces
+  Resource: '*'
+- Effect: "Allow"
+  Resource: "*"
+  Action:
+    - "sns:*"
+- Effect: Allow
+  Action:
     - s3:PutObject
     - s3:PutObjectAcl
     - s3:GetObject

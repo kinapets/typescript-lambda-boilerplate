@@ -15,7 +15,9 @@
   "dependencies": {
     "aws-lambda": "^0.1.2",
     "aws-sdk": "^2.413.0",
+    "axios": "^0.18.0",
     "lodash": "^4.17.11",
+    "moment": "^2.24.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {

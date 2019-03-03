@@ -60,6 +60,11 @@ functions:
       - s3:
           bucket: ${env:S3_BUCKET_NAME}
           event: s3:ObjectCreated:*
+# SNS
+  snsSubscribe:
+    handler: src/modules/sns-subscribe/index.snsSubscribe
+    events:
+      - sns: ${env:SNS_TOPIC}
 # SQS
   subscribe:
     handler: src/modules/sqs-publish-subscribe/index.subscribe
