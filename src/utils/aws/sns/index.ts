@@ -1,2 +1,2 @@
-const createTopic = (config: { region: string; accountId: string | number; snsTopic: string }) =>
+export const createSnsTopic = (config: { region: string; accountId: string | number; snsTopic: string }) =>
     `arn:aws:sns:${config.region}:${config.accountId}:${config.snsTopic}`;
